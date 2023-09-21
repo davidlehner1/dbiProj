@@ -54,7 +54,6 @@ ENTITY "Rezept" as Rezept {
 
 ENTITY "Diagnose" as Diagnose {
   + DiagnoseID : int PK
-  + BehandlungFK : int FK
   + Name : string
   + Beschreibung : string
 }
