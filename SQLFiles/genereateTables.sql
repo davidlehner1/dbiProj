@@ -1,3 +1,11 @@
+DROP TABLE behandlung;
+DROP TABLE rezept;
+DROP TABLE diagnose;
+DROP TABLE termin;
+DROP TABLE patient;
+DROP TABLE arzt;
+DROP TABLE arzttyp;
+DROP TABLE arztpraxis;
 
 CREATE TABLE arztpraxis
 (
