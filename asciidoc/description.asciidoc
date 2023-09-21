@@ -1,0 +1,163 @@
+= Arztpraxis
+
+== Team
+
+* Fröller Felix
+* Lehner David
+* Nikolaus Alexander
+
+== Fachdomäne
+
+Ziel ist es, dem Inhaber einen Überblick seiner Arztpraxis zu gewähren.
+Daten über Krankheitsfälle, Patienten, sowie die erbrachten Leistungen seiner Ärzte sollen erfasst werden.
+Die Software soll zudem zur Terminfindung für Patienten genutzt werden.
+
+|===
+| Entity | Attribute
+| Arztpraxis | (PraxisID; PLZ; Ort; Adresse; HausNr)
+| Arzt | (ArztID; VName; NName; Titel; ArztTypFK; PraxisFK)
+| ArztTyp | (TypID; Name; Beschreibung)
+| Patient | (SVN; VName; NName; PLZ; Ort; Adresse; HausNr; Geb.)
+| Termin | (TerminID; Datum; Uhrzeit; Dauer; PatientFK; ArztFK)
+| Diagnose | (DiagnoseID; BehandlungFK; Name; Beschreibung)
+| Rezept | (RezeptID; Verschreibung; Ausstellungsdatum; Preis; PatientFK)
+| Behandlung | (BehandlungsID; RezeptFK; DiagnoseFK; Behandlungsart)
+|===
+
+== Relevante Queries (SQL)
+
+* Nächster freier Termin
+* Kosten für Behandlung
+* Patientenliste pro Tag
+* Ist ein Termin an bestimmter Uhrzeit/Datum noch frei?
+* Krankheitsstatistik für 1 Jahr (Anzahl an Erkrankungen jeweiliger Krankheit pro Monat)
+* Durchschnittliche Behandlungszeit
+
+== DDL
+
+[source,sql]
+----
+
+CREATE TABLE arztpraxis
+(
+    praxisid number PRIMARY KEY,
+    plz      varchar2(10),
+    ort      varchar2(255),
+    adresse  varchar2(255),
+    hausnr   varchar2(10)
+);
+
+CREATE TABLE arzttyp
+(
+    typid        number PRIMARY KEY,
+    name         varchar2(255),
+    beschreibung varchar2(255)
+);
+
+CREATE TABLE arzt
+(
+    arztid    number PRIMARY KEY,
+    vname     varchar2(255),
+    nname     varchar2(255),
+    titel     varchar2(50),
+    arzttypfk number REFERENCES arzttyp(typid),
+    praxisfk  number REFERENCES arztpraxis(praxisid)
+);
+
+CREATE TABLE patient
+(
+    svn     varchar2(20) PRIMARY KEY,
+    vname   varchar2(255),
+    nname   varchar2(255),
+    plz     varchar2(10),
+    ort     varchar2(255),
+    adresse varchar2(255),
+    hausnr  varchar2(10),
+    geb     date
+);
+
+CREATE TABLE termin
+(
+    terminid  number PRIMARY KEY,
+    datum     date,
+    uhrzeit   number,
+    dauer     number,
+    patientfk varchar2(20) REFERENCES patient(svn),
+    arztfk    number REFERENCES arzt(arztid)
+);
+
+CREATE TABLE diagnose
+(
+    diagnoseid   number PRIMARY KEY,
+    name         varchar2(255),
+    beschreibung varchar2(255)
+);
+
+CREATE TABLE rezept
+(
+    rezeptid          number PRIMARY KEY,
+    verschreibung     varchar2(255),
+    ausstellungsdatum date,
+    preis             decimal(10, 2),
+    patientfk         varchar2(20) REFERENCES patient(svn)
+);
+
+CREATE TABLE behandlung
+(
+    behandlungsid  number PRIMARY KEY,
+    rezeptfk       number REFERENCES rezept(rezeptid),
+    diagnosefk     number REFERENCES diagnose(diagnoseid),
+    behandlungsart varchar2(255)
+);
+
+----
+
+== PL/SQL API zur Datenpflege
+
+=== Daten erfassen und verwalten
+
+*Funktionsname:* InsertPatientRecord +
+*Verwendung:* Aufrufen der Funktion mit Patienteninformationen als Parameter, zum einfügen eines neuen Patientendatensatzes +
+*Funktionalität:* Fügt einen neuen Patientendatensatz mit den bereitgestellten Informationen in die "Patient"-Tabelle ein und gewährleistet die Integrität der Daten.
+
+=== Übersichtsberichte
+
+*Funktionsname:* GeneratePracticeOverviewReport Verwendung: Aufrufen der Funktion um Übersichtsbericht der Praxis. +
+*Funktionalität:* Ruft relevante Daten aus verschiedenen Tabellen ab und erstellt einen Übersichtsbericht mit Statistiken zur Patientendemografie, Umsatz, häufigen Diagnosen und der Leistung der Ärzte.
+
+=== Terminvereinbarung
+
+*Funktionsname:* ScheduleAppointment Verwendung: Prozedur mit Patienten und Termindetails aufrufen, um einen neuen Termin zu planen. +
+*Funktionalität:* Überprüft die Verfügbarkeit des Arztes, erstellt einen neuen Termin-Datensatz in der "Termin"-Tabelle und sendet eine Bestätigung an den Patienten.
+
+=== Verfolgung medizinischer Leistungen
+
+*Funktionsname:* RecordMedicalService Verwendung: Rufen Sie diese Prozedur mit Patienten-, Arzt-, Diagnose- und Rezeptdetails auf, um medizinische Dienstleistungen zu erfassen. +
+*Funktionalität:* Erstellt Datensätze in verschiedenen Tabellen, um medizinische Dienstleistungen, zugehörige Diagnosen und Rezepte zu verfolgen und stellt sicher, dass eine umfassende Patientenhistorie beibehalten wird.
+
+=== Statistikfunktionen
+
+*Funktionsname:* GetPatientDemographicsStatistics Verwendung: Funktion aufrufen, um statische Informationen über Patientendemografie zu erhalten +
+*Funktionalität:* Diese Funktion analysiert die Daten in der "Patient"-Tabelle und gibt statistische Informationen zur Altersverteilung, Geschlechterverhältnis und Wohnorten der Patienten zurück.
+
+*Funktionsname:* GetCommonDiagnosesStatistics Verwendung: Rufen Sie diese Funktion auf, um statistische Informationen über häufig gestellte Diagnosen zu erhalten. +
+*Funktionalität:* Diese Funktion analysiert die "Diagnose"-Tabelle und gibt eine Liste der am häufigsten gestellten Diagnosen zusammen mit ihrer Häufigkeit aus.
+
+*Funktionsname:* GetDoctorPerformanceStatistics Verwendung: Rufen Sie diese Funktion auf, um statistische Informationen zur Leistung der Ärzte zu erhalten. +
+*Funktionalität:* Die Funktion analysiert die Aktivitäten der Ärzte, einschließlich der Anzahl der Behandlungen und ausgestellten Rezepte, um Informationen zur Leistung jedes Arztes bereitzustellen.
+
+=== Logging Triggers
+
+* Terminbezogene Updates (Absagen, Buchungen, Verschiebungen)
+** Use Case: Hilft, Termine zu organisieren, und um zu wissen, wann Patienten kommen, und wann Ärzte frei sind.
+* Updates, wenn sich Daten eines Patienten ändern (außer SVN)
+** Use Case: Ermöglicht die Überwachung aller Änderungen an Patientendaten
+* Error und Exception Logging Trigger.
+** Bei Fehler (error codes, exceptions etc.) wird ein Dateneintrag geloggt, mit Timestamp und Fehler.
+
+=== ERD:
+
+[plantuml,cld,png]
+----
+include::plantuml/cld.puml[]
+----
