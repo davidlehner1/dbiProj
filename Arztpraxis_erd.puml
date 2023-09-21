@@ -1,0 +1,85 @@
+@startuml
+!define ENTITY entity
+!define PK [PK]
+!define FK [FK]
+
+left to right direction
+
+' Entities
+ENTITY "Arztpraxis" as ArztPraxis {
+  + PraxisID : int PK
+  + PLZ : string
+  + Ort : string
+  + Adresse : string
+  + HausNr : string
+}
+
+ENTITY "Arzt" as Arzt {
+  + ArztID : int PK
+  + VName : string
+  + NName : string
+  + Titel : string
+  + ArztTypFK : int FK
+  + PraxisFK : int FK
+}
+
+ENTITY "Patient" as Patient {
+  + SVN : string
+  + VName : string
+  + NName : string
+  + Krankenkasse : string
+  + PLZ : string
+  + Ort : string
+  + Adresse : string
+  + HausNr : string
+  + GebDatum : date
+}
+
+ENTITY "Termin" as Termin {
+  + TerminID : int PK
+  + Datum : date
+  + Uhrzeit : string
+  + Dauer : int
+  + PatientFK : int FK
+  + ArztFK: int FK
+}
+
+ENTITY "Rezept" as Rezept {
+  + RezeptID : int PK
+  + Verschreibung : string
+  + Ausstellungsdatum: date
+  + Preis : decimal
+  + PatientFK : int FK
+}
+
+ENTITY "Diagnose" as Diagnose {
+  + DiagnoseID : int PK
+  + BehandlungFK : int FK
+  + Name : string
+  + Beschreibung : string
+}
+
+ENTITY "ArztTyp" as ArztTyp {
+  + TypID:int PK
+  + Name : string
+  + Beschreibung : string
+}
+
+ENTITY "Behandlung" as Behandlung {
+    + BehandlungsID : int PK
+    + RezeptFK : int FK
+    + DiagnoseFK : int FK
+    + Behandlungsart : string
+}
+
+' Relationships
+Arzt        ||--|{ Termin       : bearbeitet >
+ArztPraxis  ||--|{ Arzt         : ist in <
+ArztTyp     ||--|{ Arzt         : hat <
+Behandlung  ||--|| Rezept       : hat >
+Diagnose    ||--|{ Behandlung   : führt zu >
+Patient     ||--o{ Termin       : vereinbart >
+Patient     ||--|{ Rezept       : erhält nach Vereinbarung >
+Termin      ||--|{ Diagnose     : resultiert in >
+
+@enduml
