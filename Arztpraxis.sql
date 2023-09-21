@@ -3,7 +3,14 @@ CREATE OR REPLACE
 
     /*ALLE PARAMETER NUR ALS SAMPLE CODE*/
 
-    FUNCTION InsertPatientRecord(SVN number) return BOOLEAN;
+    FUNCTION InsertPatientRecord(svn varchar2(20),
+                                 vname varchar2(255),
+                                 nname varchar2(255),
+                                 plz varchar2(10),
+                                 ort varchar2(255),
+                                 adresse varchar2(255),
+                                 hausnr varchar2(10),
+                                 geb date) return BOOLEAN;
 
     PROCEDURE GeneratePracticeOverviewReport(PraxisID NUMBER);
 
@@ -15,14 +22,21 @@ CREATE OR REPLACE
 
     FUNCTION GetCommonDiagnosesStatistics(PraxisID NUMBER) return number;
 
-    FUNCTION GetDoctorPerformanceStatistics (ArztID number) return number;
+    FUNCTION GetDoctorPerformanceStatistics(ArztID number) return number;
 
 END ARZTPRAXIS;
 
-CREATE OR REPLACE
+    CREATE OR REPLACE
 PACKAGE BODY ARZTPRAXIS AS
 
-  FUNCTION InsertPatientRecord(SVN number) return BOOLEAN AS
+  FUNCTION InsertPatientRecord(svn varchar2,
+                                 vname varchar2,
+                                 nname varchar2,
+                                 plz varchar2,
+                                 ort varchar2,
+                                 adresse varchar2,
+                                 hausnr varchar2,
+                                 geb date) return BOOLEAN AS
   BEGIN
     -- TODO: Implementierung für FUNCTION ARZTPRAXIS.InsertPatientRecord erforderlich
     RETURN NULL;
@@ -58,7 +72,7 @@ PACKAGE BODY ARZTPRAXIS AS
     RETURN NULL;
   END GetCommonDiagnosesStatistics;
 
-  FUNCTION GetDoctorPerformanceStatistics (ArztID number) return number AS
+  FUNCTION GetDoctorPerformanceStatistics(ArztID number) return number AS
   BEGIN
     -- TODO: Implementierung für FUNCTION ARZTPRAXIS.GetDoctorPerformanceStatistics erforderlich
     RETURN NULL;
