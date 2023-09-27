@@ -30,6 +30,9 @@ VALUES (1, TO_DATE('2023-09-28', 'yyyy-mm-dd'), TO_TIMESTAMP('10:00:00', 'HH24:M
 INSERT INTO termin (terminid, datum, uhrzeit, dauer, patientfk, arztfk)
 VALUES (2, TO_DATE('2023-09-29', 'yyyy-mm-dd'), TO_TIMESTAMP('11:00:00', 'HH24:MI:SS'), 45, 'P789012', 2);
 
+INSERT INTO termin (terminid, datum, uhrzeit, dauer, patientfk, arztfk)
+VALUES (3, TO_DATE('2023-09-23', 'yyyy-mm-dd'), TO_TIMESTAMP('12:00:00', 'HH24:MI:SS'), 45, 'P789012', 2);
+
 INSERT INTO diagnose (diagnoseid, name, beschreibung, terminfk)
 VALUES (1, 'Allergy', 'Patient has an allergy.', 1);
 
