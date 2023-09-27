@@ -52,3 +52,8 @@ INSERT INTO behandlung (behandlungsid, behandlungsart, rezeptfk, diagnosefk)
 VALUES (2, 'Medication', 2, 2);
 
 COMMIT;
+
+UPDATE patient SET vname = 'test' WHERE vname = 'Bob';
+UPDATE patient SET nname = 'test' WHERE nname = 'Johnson';
+
+SET SERVEROUT ON ;
