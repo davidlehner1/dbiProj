@@ -128,7 +128,7 @@ CREATE TABLE behandlung
 === Terminvereinbarung
 
 *Funktionsname:* ScheduleAppointment Verwendung: Prozedur mit Patienten und Termindetails aufrufen, um einen neuen Termin zu planen. +
-*Funktionalität:* Überprüft die Verfügbarkeit des Arztes, erstellt einen neuen Termin-Datensatz in der "Termin"-Tabelle und sendet eine Bestätigung an den Patienten.
+*Funktionalität:* Überprüft die Verfügbarkeit des Arztes, erstellt einen neuen Termin-Datensatz in der "Termin"-Tabelle 
 
 === Verfolgung medizinischer Leistungen
 
@@ -153,7 +153,7 @@ CREATE TABLE behandlung
 * Updates, wenn sich Daten eines Patienten ändern (außer SVN)
 ** Use Case: Ermöglicht die Überwachung aller Änderungen an Patientendaten
 * Error und Exception Logging Trigger.
-** Bei Fehler (error codes, exceptions etc.) wird ein Dateneintrag geloggt, mit Timestamp und Fehler.
+** Bei Fehler (error codes, exceptions etc.) wird ein Dateneintrag geloggt, mit Fehler.
 
 === ERD:
 
