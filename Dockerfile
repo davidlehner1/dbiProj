@@ -1,5 +1,5 @@
 # Use the gvenzl/oracle-xe:slim base image
-FROM gvenzl/oracle-free
+FROM gvenzl/oracle-xe:slim
 
 # Set environment variable for Oracle password
 ENV ORACLE_PASSWORD=Oraxe23
