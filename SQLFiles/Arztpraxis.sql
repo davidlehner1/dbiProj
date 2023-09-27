@@ -47,8 +47,8 @@ CREATE OR REPLACE
             COMMIT; -- Bestätigen Sie die Transaktion
             RETURN 'TRUE'; -- Erfolgreich eingefügt
         ELSE
-            RETURN 'FALSE'; -- Patient existiert bereits
             COMMIT;
+            RETURN 'FALSE'; -- Patient existiert bereits
         END IF;
     EXCEPTION
         WHEN OTHERS THEN
