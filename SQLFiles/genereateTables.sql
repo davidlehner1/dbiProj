@@ -86,3 +86,18 @@ CREATE TABLE behandlung
     CONSTRAINT fk_behandlung_rezept FOREIGN KEY (rezeptfk) REFERENCES rezept (rezeptid),
     CONSTRAINT fk_behandlung_diagnose FOREIGN KEY (diagnosefk) REFERENCES diagnose (diagnoseid)
 );
+
+CREATE TABLE terminveränderung
+(
+    details varchar2(300) NOT NULL
+);
+
+CREATE TABLE patientUpdate
+(
+    details varchar2(300) NOT NULL
+);
+
+CREATE TABLE fehler
+(
+    details varchar2(1000) NOT NULL
+);

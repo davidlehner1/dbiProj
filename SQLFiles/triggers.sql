@@ -1,75 +1,91 @@
 CREATE OR REPLACE TRIGGER termin_update_trigger
-BEFORE INSERT OR UPDATE OR DELETE ON termin
-FOR EACH ROW
+    BEFORE INSERT OR UPDATE OR DELETE
+    ON termin
+    FOR EACH ROW
 DECLARE
 BEGIN
-    IF INSERTING THEN
+    IF inserting THEN
         -- Einfügeaktion: Protokolliere die Einfügeaktion
-        DBMS_OUTPUT.PUT_LINE('Neuer Termin eingefügt - Termin ID: ' || :NEW.terminid);
-    ELSIF UPDATING THEN
+        INSERT INTO terminveränderung (details) VALUES ('Neuer Termin eingefügt - Termin ID: ' || :NEW.terminid);
+        dbms_output.put_line('Neuer Termin eingefügt - Termin ID: ' || :new.terminid);
+    ELSIF updating THEN
         -- Update-Aktion: Protokolliere die Aktualisierung
-        DBMS_OUTPUT.PUT_LINE('Termin aktualisiert - Termin ID: ' || :NEW.terminid);
-    ELSIF DELETING THEN
+        INSERT INTO terminveränderung (details) VALUES ('Termin aktualisiert - Termin ID: ' || :NEW.terminid);
+        dbms_output.put_line('Termin aktualisiert - Termin ID: ' || :new.terminid);
+    ELSIF deleting THEN
         -- Löschaktion: Protokolliere die Löschung
-        DBMS_OUTPUT.PUT_LINE('Termin gelöscht - Termin ID: ' || :OLD.terminid);
+        INSERT INTO terminveränderung (details) VALUES ('Termin gelöscht - Termin ID: ' || :old.terminid);
+        dbms_output.put_line('Termin gelöscht - Termin ID: ' || :old.terminid);
     END IF;
 END;
 /
 
 -- Trigger erstellen
 CREATE OR REPLACE TRIGGER patient_update_trigger
-BEFORE UPDATE ON patient
-FOR EACH ROW
+    BEFORE UPDATE
+    ON patient
+    FOR EACH ROW
 DECLARE
 BEGIN
-    IF :OLD.vname <> :NEW.vname OR
-       :OLD.nname <> :NEW.nname OR
-       :OLD.plz <> :NEW.plz OR
-       :OLD.ort <> :NEW.ort OR
-       :OLD.adresse <> :NEW.adresse OR
-       :OLD.hausnr <> :NEW.hausnr OR
-       :OLD.geb <> :NEW.geb THEN
-        DBMS_OUTPUT.PUT_LINE('Patientendaten geändert - SVN: ' || :OLD.svn);
+    IF :old.vname <> :new.vname OR
+       :old.nname <> :new.nname OR
+       :old.plz <> :new.plz OR
+       :old.ort <> :new.ort OR
+       :old.adresse <> :new.adresse OR
+       :old.hausnr <> :new.hausnr OR
+       :old.geb <> :new.geb THEN
+        dbms_output.put_line('Patientendaten geändert - SVN: ' || :old.svn);
     END IF;
-        IF :OLD.vname <> :NEW.vname THEN
-        DBMS_OUTPUT.PUT_LINE('Veränderungen: Vorname ' || :OLD.vname || ' zu ' || :NEW.vname);
-    END IF;
-
-    IF :OLD.nname <> :NEW.nname THEN
-        DBMS_OUTPUT.PUT_LINE('Veränderungen: Nachname ' || :OLD.nname || ' zu ' || :NEW.nname);
+    IF :old.vname <> :new.vname THEN
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.vname || ' zu ' || :new.vname);
+        dbms_output.put_line('Veränderungen: Vorname ' || :old.vname || ' zu ' || :new.vname);
     END IF;
 
-    IF :OLD.plz <> :NEW.plz THEN
-        DBMS_OUTPUT.PUT_LINE('Veränderungen: PLZ ' || :OLD.plz || ' zu ' || :NEW.plz);
+    IF :old.nname <> :new.nname THEN
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.nname || ' zu ' || :new.nname);
+        dbms_output.put_line('Veränderungen: Nachname ' || :old.nname || ' zu ' || :new.nname);
     END IF;
 
-    IF :OLD.ort <> :NEW.ort THEN
-        DBMS_OUTPUT.PUT_LINE('Veränderungen: Ort ' || :OLD.ort || ' zu ' || :NEW.ort);
+    IF :old.plz <> :new.plz THEN
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.plz || ' zu ' || :new.plz);
+        dbms_output.put_line('Veränderungen: PLZ ' || :old.plz || ' zu ' || :new.plz);
     END IF;
 
-    IF :OLD.adresse <> :NEW.adresse THEN
-        DBMS_OUTPUT.PUT_LINE('Veränderungen: Adresse ' || :OLD.adresse || ' zu ' || :NEW.adresse);
+    IF :old.ort <> :new.ort THEN
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.ort || ' zu ' || :new.ort);
+        dbms_output.put_line('Veränderungen: Ort ' || :old.ort || ' zu ' || :new.ort);
     END IF;
 
-    IF :OLD.hausnr <> :NEW.hausnr THEN
-        DBMS_OUTPUT.PUT_LINE('Veränderungen: Hausnummer ' || :OLD.hausnr || ' zu ' || :NEW.hausnr);
+    IF :old.adresse <> :new.adresse THEN
+        INSERT INTO patientupdate (details)
+        VALUES ('Veränderungen: Vorname ' || :old.adresse || ' zu ' || :new.adresse);
+        dbms_output.put_line('Veränderungen: Adresse ' || :old.adresse || ' zu ' || :new.adresse);
     END IF;
 
-    IF :OLD.geb <> :NEW.geb THEN
-        DBMS_OUTPUT.PUT_LINE('Veränderungen: Geburtsdatum ' || TO_CHAR(:OLD.geb, 'DD.MM.YYYY') || ' zu ' || TO_CHAR(:NEW.geb, 'DD.MM.YYYY'));
+    IF :old.hausnr <> :new.hausnr THEN
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.hausnr || ' zu ' || :new.hausnr);
+        dbms_output.put_line('Veränderungen: Hausnummer ' || :old.hausnr || ' zu ' || :new.hausnr);
+    END IF;
+
+    IF :old.geb <> :new.geb THEN
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.geb || ' zu ' || :new.geb);
+        dbms_output.put_line('Veränderungen: Geburtsdatum ' || TO_CHAR(:old.geb, 'DD.MM.YYYY') || ' zu ' ||
+                             TO_CHAR(:new.geb, 'DD.MM.YYYY'));
     END IF;
 END;
 /
 
 CREATE OR REPLACE TRIGGER error_logging_trigger
-AFTER SERVERERROR ON DATABASE
+    AFTER SERVERERROR
+    ON DATABASE
 DECLARE
-    v_error_code NUMBER := SQLCODE;          -- Fehlercode
-    v_error_msg  VARCHAR2(4000) := SQLERRM;  -- Fehlermeldung
+    v_error_code number         := SQLCODE; -- Fehlercode
+    v_error_msg  varchar2(4000) := SQLERRM; -- Fehlermeldung
 BEGIN
     -- Optional: Die Fehlermeldung in die Datenbankprotokolle (DBMS_OUTPUT) schreiben
-    DBMS_OUTPUT.PUT_LINE('Fehlercode: ' || v_error_code);
-    DBMS_OUTPUT.PUT_LINE('Fehlermeldung: ' || v_error_msg);
-    DBMS_OUTPUT.PUT_LINE(CURRENT_TIMESTAMP);
+    INSERT INTO fehler (details) VALUES ('Fehlercode: ' || v_error_code || ' Fehlermeldung: ' || v_error_msg);
+    dbms_output.put_line('Fehlercode: ' || v_error_code);
+    dbms_output.put_line('Fehlermeldung: ' || v_error_msg);
+    dbms_output.put_line(CURRENT_TIMESTAMP);
 END;
 /
