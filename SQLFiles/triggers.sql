@@ -4,15 +4,15 @@ CREATE OR REPLACE TRIGGER termin_update_trigger
     FOR EACH ROW
 DECLARE
 BEGIN
-    IF inserting THEN
+    IF INSERTING THEN
         -- Einfügeaktion: Protokolliere die Einfügeaktion
-        INSERT INTO terminveränderung (details) VALUES ('Neuer Termin eingefügt - Termin ID: ' || :NEW.terminid);
+        INSERT INTO terminveränderung (details) VALUES ('Neuer Termin eingefügt - Termin ID: ' || :new.terminid);
         dbms_output.put_line('Neuer Termin eingefügt - Termin ID: ' || :new.terminid);
-    ELSIF updating THEN
+    ELSIF UPDATING THEN
         -- Update-Aktion: Protokolliere die Aktualisierung
-        INSERT INTO terminveränderung (details) VALUES ('Termin aktualisiert - Termin ID: ' || :NEW.terminid);
+        INSERT INTO terminveränderung (details) VALUES ('Termin aktualisiert - Termin ID: ' || :new.terminid);
         dbms_output.put_line('Termin aktualisiert - Termin ID: ' || :new.terminid);
-    ELSIF deleting THEN
+    ELSIF DELETING THEN
         -- Löschaktion: Protokolliere die Löschung
         INSERT INTO terminveränderung (details) VALUES ('Termin gelöscht - Termin ID: ' || :old.terminid);
         dbms_output.put_line('Termin gelöscht - Termin ID: ' || :old.terminid);
@@ -20,7 +20,6 @@ BEGIN
 END;
 /
 
--- Trigger erstellen
 CREATE OR REPLACE TRIGGER patient_update_trigger
     BEFORE UPDATE
     ON patient

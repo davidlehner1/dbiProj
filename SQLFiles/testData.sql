@@ -55,5 +55,6 @@ COMMIT;
 
 UPDATE patient SET vname = 'test' WHERE vname = 'Bob';
 UPDATE patient SET nname = 'test' WHERE nname = 'Johnson';
+UPDATE termin SET dauer = 10 WHERE dauer = 45;
 
 SET SERVEROUT ON ;

@@ -94,7 +94,7 @@ CREATE TABLE terminveränderung
 
 CREATE TABLE patientUpdate
 (
-    details varchar2(300) NOT NULL
+    details varchar2(1000) NOT NULL
 );
 
 CREATE TABLE fehler
