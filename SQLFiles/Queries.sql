@@ -1,4 +1,4 @@
--- nächster freier Termin für spezifischen Doctor (doctorid)
+-- nächster freier Termin für spezifischen Doctor (doctorid). Wenn null, dann gibt es heute noch keinen Termin
 SELECT MIN(t.datum) AS next_available_date, MIN(t.uhrzeit) AS next_available_time
 FROM termin t
 WHERE t.arztfk = :inser_doctorId
