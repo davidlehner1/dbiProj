@@ -60,3 +60,16 @@ BEGIN
     END IF;
 END;
 /
+
+CREATE OR REPLACE TRIGGER error_logging_trigger
+AFTER SERVERERROR ON DATABASE
+DECLARE
+    v_error_code NUMBER := SQLCODE;          -- Fehlercode
+    v_error_msg  VARCHAR2(4000) := SQLERRM;  -- Fehlermeldung
+BEGIN
+    -- Optional: Die Fehlermeldung in die Datenbankprotokolle (DBMS_OUTPUT) schreiben
+    DBMS_OUTPUT.PUT_LINE('Fehlercode: ' || v_error_code);
+    DBMS_OUTPUT.PUT_LINE('Fehlermeldung: ' || v_error_msg);
+    DBMS_OUTPUT.PUT_LINE(CURRENT_TIMESTAMP);
+END;
+/

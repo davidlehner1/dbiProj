@@ -1,3 +1,9 @@
+drop table BEHANDLUNG
+/
+
+drop table DIAGNOSE
+/
+
 drop table TERMIN
 /
 
@@ -8,12 +14,6 @@ drop table ARZTPRAXIS
 /
 
 drop table ARZTTYP
-/
-
-drop table BEHANDLUNG
-/
-
-drop table DIAGNOSE
 /
 
 drop table REZEPT
