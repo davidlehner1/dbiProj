@@ -1,13 +1,13 @@
--- nächster freier Termin für spezifischen Doctor datum sollte so aussehen: 1990-05-15, uhrzeit: 10
+-- nächster freier Termin für spezifischen Doctor (doctorid)
 SELECT MIN(t.datum) AS next_available_date, MIN(t.uhrzeit) AS next_available_time
 FROM termin t
 WHERE t.arztfk = :inser_doctorId
-AND (t.datum > CURRENT_DATE OR (t.datum = CURRENT_DATE AND t.uhrzeit > CURRENT_TIMESTAMP))
+AND (t.datum > CURRENT_DATE OR (t.datum = CURRENT_DATE AND t.uhrzeit > CURRENT_TIMESTAMP));
 
 -- get sum of prices of recipes per patient. Put svn in ' '
 SELECT SUM(preis) AS total_cost
 FROM rezept
-WHERE patientfk = :insert_svn
+WHERE patientfk = :insert_svn;
 
 --- patientenliste pro Tag im format: 'yyyy-mm-dd'
 SELECT p.svn, p.vname, p.nname, t.datum, t.uhrzeit
