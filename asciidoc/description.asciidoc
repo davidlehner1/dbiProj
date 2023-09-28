@@ -32,6 +32,8 @@ Die Software soll zudem zur Terminfindung für Patienten genutzt werden.
 * Ist ein Termin an bestimmter Uhrzeit/Datum noch frei?
 * Krankheitsstatistik für 1 Jahr (Anzahl an Erkrankungen jeweiliger Krankheit pro Monat)
 * Durchschnittliche Behandlungszeit
+* *Funktionsname:* GetCommonDiagnosesStatistics Verwendung: Rufen Sie diese Funktion auf, um statistische Informationen über häufig gestellte Diagnosen zu erhalten. +
+*Funktionalität:* Diese Funktion analysiert die "Diagnose"-Tabelle und gibt eine Liste der am häufigsten gestellten Diagnosen zusammen mit ihrer Häufigkeit aus.
 
 == DDL
 
@@ -114,12 +116,6 @@ CREATE TABLE behandlung
 
 == PL/SQL API zur Datenpflege
 
-=== Daten erfassen und verwalten
-
-*Funktionsname:* InsertPatientRecord +
-*Verwendung:* Aufrufen der Funktion mit Patienteninformationen als Parameter, zum einfügen eines neuen Patientendatensatzes +
-*Funktionalität:* Fügt einen neuen Patientendatensatz mit den bereitgestellten Informationen in die "Patient"-Tabelle ein und gewährleistet die Integrität der Daten.
-
 === Übersichtsberichte
 
 *Funktionsname:* GeneratePracticeOverviewReport Verwendung: Aufrufen der Funktion um Übersichtsbericht der Praxis. +
@@ -127,24 +123,13 @@ CREATE TABLE behandlung
 
 === Terminvereinbarung
 
-*Funktionsname:* ScheduleAppointment Verwendung: Prozedur mit Patienten und Termindetails aufrufen, um einen neuen Termin zu planen. +
+*Funktionsname:* ScheduleAppointment Verwendung: Prozedur mit Patienten und Termindetails aufrufen, um einen neuen Termin zu planen. Wenn es den Patienten noch nicht gibt, wird er angelegt+
 *Funktionalität:* Überprüft die Verfügbarkeit des Arztes, erstellt einen neuen Termin-Datensatz in der "Termin"-Tabelle 
 
 === Verfolgung medizinischer Leistungen
 
 *Funktionsname:* RecordMedicalService Verwendung: Rufen Sie diese Prozedur mit Patienten-, Arzt-, Diagnose- und Rezeptdetails auf, um medizinische Dienstleistungen zu erfassen. +
 *Funktionalität:* Erstellt Datensätze in verschiedenen Tabellen, um medizinische Dienstleistungen, zugehörige Diagnosen und Rezepte zu verfolgen und stellt sicher, dass eine umfassende Patientenhistorie beibehalten wird.
-
-=== Statistikfunktionen
-
-*Funktionsname:* GetPatientDemographicsStatistics Verwendung: Funktion aufrufen, um statische Informationen über Patientendemografie zu erhalten +
-*Funktionalität:* Diese Funktion analysiert die Daten in der "Patient"-Tabelle und gibt statistische Informationen zur Altersverteilung, Geschlechterverhältnis und Wohnorten der Patienten zurück.
-
-*Funktionsname:* GetCommonDiagnosesStatistics Verwendung: Rufen Sie diese Funktion auf, um statistische Informationen über häufig gestellte Diagnosen zu erhalten. +
-*Funktionalität:* Diese Funktion analysiert die "Diagnose"-Tabelle und gibt eine Liste der am häufigsten gestellten Diagnosen zusammen mit ihrer Häufigkeit aus.
-
-*Funktionsname:* GetDoctorPerformanceStatistics Verwendung: Rufen Sie diese Funktion auf, um statistische Informationen zur Leistung der Ärzte zu erhalten. +
-*Funktionalität:* Die Funktion analysiert die Aktivitäten der Ärzte, einschließlich der Anzahl der Behandlungen und ausgestellten Rezepte, um Informationen zur Leistung jedes Arztes bereitzustellen.
 
 === Logging Triggers
 
