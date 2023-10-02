@@ -1,10 +1,10 @@
 --SET SERVEROUTPUT ON;
 
 DECLARE
-    insertedRecord VARCHAR2(20); -- Verwenden Sie VARCHAR2 mit einer geeigneten Länge
+    insertedrecord varchar2(20); -- Verwenden Sie VARCHAR2 mit einer geeigneten Länge
 BEGIN
     -- Call the InsertPatientRecord function with appropriate arguments
-    insertedRecord := ARZTPRAXIS.InsertPatientRecord(
+    insertedrecord := arztpraxis.insertpatientrecord(
             '123456789', -- Example Sozialversicherungsnummer
             'Max', -- Vorname
             'Mustermann', -- Nachname
@@ -16,7 +16,11 @@ BEGIN
         );
 
     -- Convert BOOLEAN to a string and print the result
-    DBMS_OUTPUT.PUT_LINE(TO_CHAR(insertedRecord));
+    dbms_output.put_line(TO_CHAR(insertedrecord));
 END;
 COMMIT;
 /
+
+BEGIN
+    arztpraxis.GENERATEPRACTICEOVERVIEWREPORT(1);
+END;

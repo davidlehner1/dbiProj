@@ -1,48 +1,42 @@
-create or replace PACKAGE ARZTPRAXIS AS
+CREATE OR REPLACE PACKAGE arztpraxis AS
 
     /*ALLE PARAMETER NUR ALS SAMPLE CODE*/
 
-    FUNCTION InsertPatientRecord(svn varchar2,
+    FUNCTION insertpatientrecord(svn varchar2,
                                  vname varchar2,
                                  nname varchar2,
                                  plz varchar2,
                                  ort varchar2,
                                  adresse varchar2,
                                  hausnr varchar2,
-                                 geb date) return varchar2;
+                                 geb date) RETURN varchar2;
 
-    PROCEDURE GeneratePracticeOverviewReport(PraxisID NUMBER);
+    PROCEDURE generatepracticeoverviewreport(praxisid number);
 
-    PROCEDURE ScheduleAppointment(SVN number, datum DATE);
+    PROCEDURE scheduleappointment(svn number, datum date);
 
-    PROCEDURE RecordMedicalService(SVN number, datum DATE);
+    PROCEDURE recordmedicalservice(svn number, datum date);
 
-    FUNCTION GetPatientDemographicsStatistics(PraxisID NUMBER) return number;
-
-    FUNCTION GetCommonDiagnosesStatistics(PraxisID NUMBER) return number;
-
-    FUNCTION GetDoctorPerformanceStatistics(ArztID number) return number;
-
-END ARZTPRAXIS;
+END arztpraxis;
 
 CREATE OR REPLACE
-    PACKAGE BODY ARZTPRAXIS AS
+    PACKAGE BODY arztpraxis AS
 
-    FUNCTION InsertPatientRecord(
+    FUNCTION insertpatientrecord(
         svn varchar2, vname varchar2, nname varchar2, plz varchar2, ort varchar2,
         adresse varchar2, hausnr varchar2, geb date)
-        return varchar2 AS
+        RETURN varchar2 AS
         p_count number;
     BEGIN
         -- Prüfen, ob der Patient bereits in der Datenbank existiert
-        SELECT COUNT(SVN)
+        SELECT COUNT(svn)
         INTO p_count
-        FROM PATIENT
-        WHERE SVN = svn;
+        FROM patient
+        WHERE svn = svn;
 
         -- Wenn der Patient nicht existiert, fügen Sie ihn hinzu
         IF p_count = 0 THEN
-            INSERT INTO PATIENT (SVN, VNAME, NNAME, PLZ, ORT, ADRESSE, HAUSNR, GEB)
+            INSERT INTO patient (svn, vname, nname, plz, ort, adresse, hausnr, geb)
             VALUES (svn, vname, nname, plz, ort, adresse, hausnr, geb);
             COMMIT; -- Bestätigen Sie die Transaktion
             RETURN 'TRUE'; -- Erfolgreich eingefügt
@@ -54,42 +48,30 @@ CREATE OR REPLACE
         WHEN OTHERS THEN
             ROLLBACK; -- Bei Fehlern Transaktion rückgängig machen
             RETURN 'FALSE'; -- Fehler bei der Einfügung
-    END InsertPatientRecord;
+    END insertpatientrecord;
 
-    PROCEDURE GeneratePracticeOverviewReport(PraxisID NUMBER) AS
+    PROCEDURE generatepracticeoverviewreport(praxisid number) AS
+        diagnose_name varchar2(20);
+        diagnose_id   number;
+        behandlung    boolean;
     BEGIN
-        -- TODO: Implementierung für PROCEDURE ARZTPRAXIS.GeneratePracticeOverviewReport erforderlich
-        NULL;
-    END GeneratePracticeOverviewReport;
 
-    PROCEDURE ScheduleAppointment(SVN number, datum DATE) AS
+        SELECT name INTO diagnose_name FROM diagnose;
+        dbms_output.put_line(diagnose_name);
+    END generatepracticeoverviewreport;
+
+    PROCEDURE
+        scheduleappointment(svn number, datum date) AS
     BEGIN
         -- TODO: Implementierung für PROCEDURE ARZTPRAXIS.RecordMedicalService erforderlich
         NULL;
-    END ScheduleAppointment;
+    END scheduleappointment;
 
-    PROCEDURE RecordMedicalService(SVN number, datum DATE) AS
+    PROCEDURE
+        recordmedicalservice(svn number, datum date) AS
     BEGIN
         -- TODO: Implementierung für PROCEDURE ARZTPRAXIS.RecordMedicalService erforderlich
         NULL;
-    END RecordMedicalService;
+    END recordmedicalservice;
 
-    FUNCTION GetPatientDemographicsStatistics(PraxisID NUMBER) return number AS
-    BEGIN
-        -- TODO: Implementierung für FUNCTION ARZTPRAXIS.GetPatientDemographicsStatistics erforderlich
-        RETURN NULL;
-    END GetPatientDemographicsStatistics;
-
-    FUNCTION GetCommonDiagnosesStatistics(PraxisID NUMBER) return number AS
-    BEGIN
-        -- TODO: Implementierung für FUNCTION ARZTPRAXIS.GetCommonDiagnosesStatistics erforderlich
-        RETURN NULL;
-    END GetCommonDiagnosesStatistics;
-
-    FUNCTION GetDoctorPerformanceStatistics(ArztID number) return number AS
-    BEGIN
-        -- TODO: Implementierung für FUNCTION ARZTPRAXIS.GetDoctorPerformanceStatistics erforderlich
-        RETURN NULL;
-    END GetDoctorPerformanceStatistics;
-
-END ARZTPRAXIS;
+END arztpraxis;
