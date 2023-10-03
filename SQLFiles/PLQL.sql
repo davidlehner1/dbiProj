@@ -4,13 +4,13 @@ CREATE OR REPLACE PACKAGE praxis_management_pkg AS
     FUNCTION generatepracticeoverviewreport RETURN varchar2;
 
     -- Terminvereinbarung
-    PROCEDURE scheduleappointment(
+    FUNCTION scheduleappointment(
         p_patient_svn IN varchar2,
         p_arzt_id IN number,
         p_termin_datum IN date,
         p_termin_uhrzeit IN timestamp,
         p_termin_dauer IN number
-    );
+    ) RETURN varchar2;
 
     -- Verfolgung medizinischer Leistungen
     PROCEDURE recordmedicalservice(
@@ -74,24 +74,72 @@ CREATE OR REPLACE PACKAGE BODY praxis_management_pkg AS
         RETURN v_report;
     END generatepracticeoverviewreport;
 
-    -- Terminvereinbarung
-    PROCEDURE scheduleappointment(
+    FUNCTION scheduleappointment(
         p_patient_svn IN varchar2,
         p_arzt_id IN number,
         p_termin_datum IN date,
         p_termin_uhrzeit IN timestamp,
         p_termin_dauer IN number
-    ) AS
-        p_terminid number(20);
+    ) RETURN varchar2 AS
+        v_patient_exists   number;
+        v_arzt_exists      number;
+        v_next_appointment timestamp;
+        v_message          varchar2(100);
     BEGIN
-        -- (Implementation as before)
-        SELECT MAX(terminid) + 1 INTO p_terminid FROM termin;
+        -- Überprüfen, ob der Patient existiert, wenn nicht, anlegen
+        SELECT COUNT(*) INTO v_patient_exists FROM patient WHERE svn = p_patient_svn;
+
+        IF v_patient_exists = 0 THEN
+            -- Patient anlegen
+            INSERT INTO patient (svn, vname, nname, plz, ort, adresse, hausnr, geb) VALUES (p_patient_svn, 'auto_generated', 'auto_generated', 0000, 'auto', 'auto_generated', 0, '10.01.1990');
+        END IF;
+
+        -- Überprüfen, ob der Arzt existiert
+        SELECT COUNT(*) INTO v_arzt_exists FROM arzt WHERE arztid = p_arzt_id;
+
+        IF v_arzt_exists = 0 THEN
+            v_message := 'Arzt mit ID ' || p_arzt_id || ' existiert nicht.';
+            RETURN v_message;
+        END IF;
+
+        -- Überprüfen der Verfügbarkeit des Arztes
+        SELECT MIN(uhrzeit)
+        INTO v_next_appointment
+        FROM termin
+        WHERE arztfk = p_arzt_id
+          AND datum = p_termin_datum
+          AND (
+                (uhrzeit >= p_termin_uhrzeit AND uhrzeit < (p_termin_uhrzeit + (p_termin_dauer / 1440))) OR
+                ((uhrzeit + (dauer / 1440)) > p_termin_uhrzeit AND
+                 (uhrzeit + (dauer / 1440)) <= (p_termin_uhrzeit + (p_termin_dauer / 1440)))
+            );
+
+        IF v_next_appointment IS NOT NULL THEN
+            v_message := 'Der Arzt hat bereits einen Termin um ' || TO_CHAR(v_next_appointment, 'HH24:MI') || ' Uhr.';
+            RETURN v_message;
+        END IF;
+
+        -- Termin anlegen
         INSERT INTO termin (terminid, datum, uhrzeit, dauer, patientfk, arztfk)
-        VALUES (p_terminid, p_termin_datum, p_termin_uhrzeit, p_termin_dauer, p_patient_svn, p_arzt_id);
+        VALUES ((SELECT NVL(MAX(terminid), 0) + 1 FROM termin),
+                p_termin_datum,
+                p_termin_uhrzeit,
+                p_termin_dauer,
+                p_patient_svn,
+                p_arzt_id);
+
         COMMIT;
+
+        v_message := 'Termin erfolgreich geplant.';
+        RETURN v_message;
+    EXCEPTION
+        WHEN OTHERS THEN
+            v_message := 'Fehler: ' || SQLERRM;
+            RETURN v_message;
     END scheduleappointment;
 
-    -- Verfolgung medizinischer Leistungen
+
+-- Verfolgung medizinischer Leistungen
     PROCEDURE recordmedicalservice(
         p_patient_svn IN varchar2,
         p_arzt_id IN number,
@@ -115,17 +163,18 @@ END praxis_management_pkg;
 -- Test the procedures/functions
 DECLARE
     report_text varchar2(4000);
+    schedule_text varchar2(4000);
 BEGIN
     -- Test GeneratePracticeOverviewReport
     report_text := praxis_management_pkg.generatepracticeoverviewreport;
     dbms_output.put_line(report_text);
 
-    /*-- Test ScheduleAppointment
-    praxis_management_pkg.scheduleappointment('P123456', 1, TO_DATE('2023-09-29', 'yyyy-mm-dd'),
-                                              TO_TIMESTAMP('10:00:00', 'HH24:MI:SS'), 30);
-    dbms_output.put_line('Appointment scheduled successfully.');
+    -- Test ScheduleAppointment
+    schedule_text := praxis_management_pkg.scheduleappointment('P123456', 1, TO_DATE('2023-10-04', 'yyyy-mm-dd'),
+                                              TO_TIMESTAMP('12:30:00', 'HH24:MI:SS'), 30);
+    dbms_output.put_line(schedule_text);
 
-    -- Test RecordMedicalService
+    /*-- Test RecordMedicalService
     praxis_management_pkg.recordmedicalservice('1234567890', 1, 1, 1, 1, 'Checkup');
     dbms_output.put_line('Medical service recorded successfully.');*/
     COMMIT;
