@@ -21,7 +21,6 @@ SELECT CASE WHEN COUNT(*) = 0 THEN 'Ja' ELSE 'Nein' END AS availability
 FROM termin t
 WHERE t.arztfk = :doctorIdInput AND t.datum = TO_DATE(:dateInput, 'yyyy-mm-dd') AND t.uhrzeit = TO_TIMESTAMP(:timeInput, 'HH24:MI:SS');
 
-
 --- bekomme die Anzahl der Krankheiten pro Monat
 SELECT TO_CHAR(t.datum, 'YYYY-MM') AS month_year, d.name AS diagnosis, COUNT(*) AS diagnosis_count
 FROM termin t
@@ -30,8 +29,12 @@ WHERE t.datum >= ADD_MONTHS(CURRENT_DATE, -12)
 GROUP BY TO_CHAR(t.datum, 'YYYY-MM'), d.name
 ORDER BY month_year, d.name;
 
-
 --- durchschnittliche Behandlungszeit
 SELECT AVG(t.dauer) AS average_treatment_time
 FROM termin t;
 
+--- oft gestellte Diagnosen
+SELECT name AS diagnose, COUNT(*) AS häufigkeit
+FROM diagnose
+GROUP BY name
+ORDER BY häufigkeit DESC;

@@ -32,8 +32,7 @@ Die Software soll zudem zur Terminfindung für Patienten genutzt werden.
 * Ist ein Termin an bestimmter Uhrzeit/Datum noch frei?
 * Krankheitsstatistik für 1 Jahr (Anzahl an Erkrankungen jeweiliger Krankheit pro Monat)
 * Durchschnittliche Behandlungszeit
-* *Funktionsname:* GetCommonDiagnosesStatistics Verwendung: Rufen Sie diese Funktion auf, um statistische Informationen über häufig gestellte Diagnosen zu erhalten. +
-*Funktionalität:* Diese Funktion analysiert die "Diagnose"-Tabelle und gibt eine Liste der am häufigsten gestellten Diagnosen zusammen mit ihrer Häufigkeit aus.
+* Häufig gestellte Diagnosen mit Häufigkeit ausgeben
 
 == DDL
 

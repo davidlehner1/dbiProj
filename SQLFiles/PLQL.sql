@@ -30,11 +30,48 @@ CREATE OR REPLACE PACKAGE BODY praxis_management_pkg AS
 
     -- Übersichtsberichte
     FUNCTION generatepracticeoverviewreport RETURN varchar2 AS
-        report varchar2(4000);
+        v_report clob;
     BEGIN
-        -- (Implementation as before)
-        report := 'Sample Übersichtsbericht';
-        RETURN report;
+        -- Initialize the report
+        v_report := 'Praxis Übersichtsbericht' || CHR(10) || CHR(10);
+
+        -- Patientendemografie
+        v_report := v_report || 'Patientendemografie:' || CHR(10);
+        SELECT COUNT(*) INTO v_report FROM patient;
+        v_report := v_report || 'Gesamtzahl der Patienten: ' || v_report || CHR(10);
+
+        -- Umsatz
+        v_report := v_report || CHR(10) || 'Umsatz:' || CHR(10);
+        SELECT SUM(preis) INTO v_report FROM rezept;
+        v_report := v_report || 'Gesamtumsatz: ' || v_report || CHR(10);
+
+        -- Häufige Diagnosen
+        v_report := v_report || CHR(10) || 'Häufige Diagnosen:' || CHR(10);
+        FOR r IN (
+            SELECT name, COUNT(*) AS häufigkeit
+            FROM diagnose
+            GROUP BY name
+            ORDER BY häufigkeit DESC
+            )
+            LOOP
+                v_report := v_report || r.name || ': ' || r.häufigkeit || ' Mal' || CHR(10);
+            END LOOP;
+
+        -- Leistung der Ärzte
+        v_report := v_report || CHR(10) || 'Leistung der Ärzte:' || CHR(10);
+        FOR r IN (
+            SELECT a.vname || ' ' || a.nname AS arztname, COUNT(*) AS terminanzahl
+            FROM arzt a
+                     JOIN termin t ON a.arztid = t.arztfk
+            GROUP BY a.vname, a.nname
+            ORDER BY terminanzahl DESC
+            )
+            LOOP
+                v_report := v_report || r.arztname || ': ' || r.terminanzahl || ' Termine' || CHR(10);
+            END LOOP;
+
+        -- Return the report
+        RETURN v_report;
     END generatepracticeoverviewreport;
 
     -- Terminvereinbarung
@@ -45,8 +82,7 @@ CREATE OR REPLACE PACKAGE BODY praxis_management_pkg AS
         p_termin_uhrzeit IN timestamp,
         p_termin_dauer IN number
     ) AS
-        DECLARE
-                p_terminid number(20);
+        p_terminid number(20);
     BEGIN
         -- (Implementation as before)
         SELECT MAX(terminid) + 1 INTO p_terminid FROM termin;
@@ -84,14 +120,14 @@ BEGIN
     report_text := praxis_management_pkg.generatepracticeoverviewreport;
     dbms_output.put_line(report_text);
 
-    -- Test ScheduleAppointment
-    praxis_management_pkg.scheduleappointment('P123456', 1, TO_DATE('2023-09-29', 'yyyy-mm-dd'), TO_TIMESTAMP('10:00:00', 'HH24:MI:SS'), 30);
+    /*-- Test ScheduleAppointment
+    praxis_management_pkg.scheduleappointment('P123456', 1, TO_DATE('2023-09-29', 'yyyy-mm-dd'),
+                                              TO_TIMESTAMP('10:00:00', 'HH24:MI:SS'), 30);
     dbms_output.put_line('Appointment scheduled successfully.');
 
     -- Test RecordMedicalService
     praxis_management_pkg.recordmedicalservice('1234567890', 1, 1, 1, 1, 'Checkup');
-    dbms_output.put_line('Medical service recorded successfully.');
-
+    dbms_output.put_line('Medical service recorded successfully.');*/
     COMMIT;
 END;
 /
