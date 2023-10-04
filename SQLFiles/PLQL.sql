@@ -14,12 +14,11 @@ CREATE OR REPLACE PACKAGE praxis_management_pkg AS
 
     -- Verfolgung medizinischer Leistungen
     PROCEDURE recordmedicalservice(
-        p_patient_svn IN varchar2,
-        p_arzt_id IN number,
-        p_diagnose_id IN number,
-        p_rezept_id IN number,
-        p_behandlungsid IN number,
-        p_behandlungsart IN varchar2
+        p_termin_id IN number,
+        p_diagnose_name IN varchar2,
+        p_diagnose_beschreibung IN varchar2,
+        p_behandlung_art IN varchar2,
+        p_rezept_id IN number DEFAULT NULL
     );
 
 END praxis_management_pkg;
@@ -91,7 +90,8 @@ CREATE OR REPLACE PACKAGE BODY praxis_management_pkg AS
 
         IF v_patient_exists = 0 THEN
             -- Patient anlegen
-            INSERT INTO patient (svn, vname, nname, plz, ort, adresse, hausnr, geb) VALUES (p_patient_svn, 'auto_generated', 'auto_generated', 0000, 'auto', 'auto_generated', 0, '10.01.1990');
+            INSERT INTO patient (svn, vname, nname, plz, ort, adresse, hausnr, geb)
+            VALUES (p_patient_svn, 'auto_generated', 'auto_generated', 0000, 'auto', 'auto_generated', 0, '10.01.1990');
         END IF;
 
         -- Überprüfen, ob der Arzt existiert
@@ -141,19 +141,21 @@ CREATE OR REPLACE PACKAGE BODY praxis_management_pkg AS
 
 -- Verfolgung medizinischer Leistungen
     PROCEDURE recordmedicalservice(
-        p_patient_svn IN varchar2,
-        p_arzt_id IN number,
-        p_diagnose_id IN number,
-        p_rezept_id IN number,
-        p_behandlungsid IN number,
-        p_behandlungsart IN varchar2
+        p_termin_id IN number,
+        p_diagnose_name IN varchar2,
+        p_diagnose_beschreibung IN varchar2,
+        p_behandlung_art IN varchar2,
+        p_rezept_id IN number DEFAULT NULL
     ) AS
+        v_diagnose_id   number;
+        v_behandlung_id number;
     BEGIN
-        -- (Implementation as before)
-        INSERT INTO diagnose (diagnoseid, terminfk) VALUES (p_diagnose_id, p_behandlungsid);
-        INSERT INTO rezept (rezeptid, patientfk) VALUES (p_rezept_id, p_patient_svn);
-        INSERT INTO behandlung (behandlungsid, behandlungsart, rezeptfk, diagnosefk)
-        VALUES (p_behandlungsid, p_behandlungsart, p_rezept_id, p_diagnose_id);
+        SELECT NVL(MAX(diagnoseid) + 1, 1) INTO v_diagnose_id FROM diagnose;
+        SELECT NVL(MAX(behandlungsid) + 1, 1) INTO v_behandlung_id FROM behandlung;
+
+        INSERT INTO diagnose VALUES (v_diagnose_id, p_diagnose_name, p_diagnose_beschreibung, p_termin_id);
+        INSERT INTO behandlung VALUES (v_behandlung_id, p_behandlung_art, p_rezept_id, v_diagnose_id);
+
         COMMIT;
     END recordmedicalservice;
 
@@ -162,7 +164,7 @@ END praxis_management_pkg;
 
 -- Test the procedures/functions
 DECLARE
-    report_text varchar2(4000);
+    report_text   varchar2(4000);
     schedule_text varchar2(4000);
 BEGIN
     -- Test GeneratePracticeOverviewReport
@@ -171,12 +173,12 @@ BEGIN
 
     -- Test ScheduleAppointment
     schedule_text := praxis_management_pkg.scheduleappointment('P123456', 1, TO_DATE('2023-10-04', 'yyyy-mm-dd'),
-                                              TO_TIMESTAMP('12:30:00', 'HH24:MI:SS'), 30);
+                                                               TO_TIMESTAMP('12:30:00', 'HH24:MI:SS'), 30);
     dbms_output.put_line(schedule_text);
 
-    /*-- Test RecordMedicalService
-    praxis_management_pkg.recordmedicalservice('1234567890', 1, 1, 1, 1, 'Checkup');
-    dbms_output.put_line('Medical service recorded successfully.');*/
+    -- Test RecordMedicalService
+    praxis_management_pkg.recordmedicalservice(1, 'Leukämie', '1. Stadium', 'Vorläufige Diagnose');
+    dbms_output.put_line('Medical service recorded successfully.');
     COMMIT;
 END;
 /

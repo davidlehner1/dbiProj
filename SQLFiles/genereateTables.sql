@@ -80,7 +80,7 @@ CREATE TABLE behandlung
 (
     behandlungsid  number(20)    NOT NULL,
     behandlungsart varchar2(255) NOT NULL,
-    rezeptfk       number(20)    NOT NULL,
+    rezeptfk       number(20)    NULL,
     diagnosefk     number(20)    NOT NULL,
     CONSTRAINT pk_behandlung PRIMARY KEY (behandlungsid),
     CONSTRAINT fk_behandlung_rezept FOREIGN KEY (rezeptfk) REFERENCES rezept (rezeptid),
@@ -92,7 +92,7 @@ CREATE TABLE terminveränderung
     details varchar2(300) NOT NULL
 );
 
-CREATE TABLE patientUpdate
+CREATE TABLE patientupdate
 (
     details varchar2(1000) NOT NULL
 );
