@@ -6,16 +6,16 @@ DECLARE
 BEGIN
     IF INSERTING THEN
         -- Einfügeaktion: Protokolliere die Einfügeaktion
-        INSERT INTO terminveränderung (details) VALUES ('Neuer Termin eingefügt - Termin ID: ' || :new.terminid);
-        dbms_output.put_line('Neuer Termin eingefügt - Termin ID: ' || :new.terminid);
+        INSERT INTO terminveränderung (details) VALUES ('Neuer Termin eingefügt - Termin ID: ' || :new.terminid || CURRENT_TIMESTAMP);
+        dbms_output.put_line('Neuer Termin eingefügt - Termin ID: ' || :new.terminid || CURRENT_TIMESTAMP);
     ELSIF UPDATING THEN
         -- Update-Aktion: Protokolliere die Aktualisierung
-        INSERT INTO terminveränderung (details) VALUES ('Termin aktualisiert - Termin ID: ' || :new.terminid);
-        dbms_output.put_line('Termin aktualisiert - Termin ID: ' || :new.terminid);
+        INSERT INTO terminveränderung (details) VALUES ('Termin aktualisiert - Termin ID: ' || :new.terminid || CURRENT_TIMESTAMP);
+        dbms_output.put_line('Termin aktualisiert - Termin ID: ' || :new.terminid || CURRENT_TIMESTAMP);
     ELSIF DELETING THEN
         -- Löschaktion: Protokolliere die Löschung
-        INSERT INTO terminveränderung (details) VALUES ('Termin gelöscht - Termin ID: ' || :old.terminid);
-        dbms_output.put_line('Termin gelöscht - Termin ID: ' || :old.terminid);
+        INSERT INTO terminveränderung (details) VALUES ('Termin gelöscht - Termin ID: ' || :old.terminid || CURRENT_TIMESTAMP);
+        dbms_output.put_line('Termin gelöscht - Termin ID: ' || :old.terminid || CURRENT_TIMESTAMP);
     END IF;
 END;
 /
@@ -33,41 +33,41 @@ BEGIN
        :old.adresse <> :new.adresse OR
        :old.hausnr <> :new.hausnr OR
        :old.geb <> :new.geb THEN
-        dbms_output.put_line('Patientendaten geändert - SVN: ' || :old.svn);
+        dbms_output.put_line('Patientendaten geändert - SVN: ' || :old.svn || ' ' || CURRENT_TIMESTAMP);
     END IF;
     IF :old.vname <> :new.vname THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.vname || ' zu ' || :new.vname);
-        dbms_output.put_line('Veränderungen: Vorname ' || :old.vname || ' zu ' || :new.vname);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.vname || ' zu ' || :new.vname || ' ' || CURRENT_TIMESTAMP);
+        dbms_output.put_line('Veränderungen: Vorname ' || :old.vname || ' zu ' || :new.vname || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.nname <> :new.nname THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.nname || ' zu ' || :new.nname);
-        dbms_output.put_line('Veränderungen: Nachname ' || :old.nname || ' zu ' || :new.nname);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.nname || ' zu ' || :new.nname || ' ' || CURRENT_TIMESTAMP);
+        dbms_output.put_line('Veränderungen: Nachname ' || :old.nname || ' zu ' || :new.nname || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.plz <> :new.plz THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.plz || ' zu ' || :new.plz);
-        dbms_output.put_line('Veränderungen: PLZ ' || :old.plz || ' zu ' || :new.plz);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.plz || ' zu ' || :new.plz || ' ' || CURRENT_TIMESTAMP);
+        dbms_output.put_line('Veränderungen: PLZ ' || :old.plz || ' zu ' || :new.plz || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.ort <> :new.ort THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.ort || ' zu ' || :new.ort);
-        dbms_output.put_line('Veränderungen: Ort ' || :old.ort || ' zu ' || :new.ort);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.ort || ' zu ' || :new.ort || ' ' || CURRENT_TIMESTAMP);
+        dbms_output.put_line('Veränderungen: Ort ' || :old.ort || ' zu ' || :new.ort || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.adresse <> :new.adresse THEN
         INSERT INTO patientupdate (details)
-        VALUES ('Veränderungen: Vorname ' || :old.adresse || ' zu ' || :new.adresse);
-        dbms_output.put_line('Veränderungen: Adresse ' || :old.adresse || ' zu ' || :new.adresse);
+        VALUES ('Veränderungen: Vorname ' || :old.adresse || ' zu ' || :new.adresse || ' ' || CURRENT_TIMESTAMP);
+        dbms_output.put_line('Veränderungen: Adresse ' || :old.adresse || ' zu ' || :new.adresse || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.hausnr <> :new.hausnr THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.hausnr || ' zu ' || :new.hausnr);
-        dbms_output.put_line('Veränderungen: Hausnummer ' || :old.hausnr || ' zu ' || :new.hausnr);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.hausnr || ' zu ' || :new.hausnr || ' ' ||  CURRENT_TIMESTAMP);
+        dbms_output.put_line('Veränderungen: Hausnummer ' || :old.hausnr || ' zu ' || :new.hausnr || ' ' ||  CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.geb <> :new.geb THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.geb || ' zu ' || :new.geb);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.geb || ' zu ' || :new.geb || ' ' ||  CURRENT_TIMESTAMP);
         dbms_output.put_line('Veränderungen: Geburtsdatum ' || TO_CHAR(:old.geb, 'DD.MM.YYYY') || ' zu ' ||
                              TO_CHAR(:new.geb, 'DD.MM.YYYY'));
     END IF;
@@ -82,7 +82,7 @@ DECLARE
     v_error_msg  varchar2(4000) := SQLERRM; -- Fehlermeldung
 BEGIN
     -- Optional: Die Fehlermeldung in die Datenbankprotokolle (DBMS_OUTPUT) schreiben
-    INSERT INTO fehler (details) VALUES ('Fehlercode: ' || v_error_code || ' Fehlermeldung: ' || v_error_msg);
+    INSERT INTO fehler (details) VALUES ('Fehlercode: ' || v_error_code || ' Fehlermeldung: ' || v_error_msg || ' ' ||  CURRENT_TIMESTAMP);
     dbms_output.put_line('Fehlercode: ' || v_error_code);
     dbms_output.put_line('Fehlermeldung: ' || v_error_msg);
     dbms_output.put_line(CURRENT_TIMESTAMP);
