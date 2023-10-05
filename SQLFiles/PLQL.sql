@@ -30,19 +30,21 @@ CREATE OR REPLACE PACKAGE BODY praxis_management_pkg AS
     -- Übersichtsberichte
     FUNCTION generatepracticeoverviewreport RETURN varchar2 AS
         v_report clob;
+        v_patient_count number;
+        v_total_revenue number;
     BEGIN
         -- Initialize the report
         v_report := 'Praxis Übersichtsbericht' || CHR(10) || CHR(10);
 
         -- Patientendemografie
+        SELECT COUNT(*) INTO v_patient_count FROM patient;
         v_report := v_report || 'Patientendemografie:' || CHR(10);
-        SELECT COUNT(*) INTO v_report FROM patient;
-        v_report := v_report || 'Gesamtzahl der Patienten: ' || v_report || CHR(10);
+        v_report := v_report || 'Gesamtzahl der Patienten: ' || v_patient_count || CHR(10);
 
         -- Umsatz
+        SELECT SUM(preis) INTO v_total_revenue FROM rezept;
         v_report := v_report || CHR(10) || 'Umsatz:' || CHR(10);
-        SELECT SUM(preis) INTO v_report FROM rezept;
-        v_report := v_report || 'Gesamtumsatz: ' || v_report || CHR(10);
+        v_report := v_report || 'Gesamtumsatz: ' || v_total_revenue || CHR(10);
 
         -- Häufige Diagnosen
         v_report := v_report || CHR(10) || 'Häufige Diagnosen:' || CHR(10);
@@ -167,18 +169,23 @@ DECLARE
     report_text   varchar2(4000);
     schedule_text varchar2(4000);
 BEGIN
+    dbms_output.put_line('_________');
+
     -- Test GeneratePracticeOverviewReport
     report_text := praxis_management_pkg.generatepracticeoverviewreport;
     dbms_output.put_line(report_text);
+    dbms_output.put_line('_________');
 
     -- Test ScheduleAppointment
     schedule_text := praxis_management_pkg.scheduleappointment('P123456', 1, TO_DATE('2023-10-04', 'yyyy-mm-dd'),
                                                                TO_TIMESTAMP('12:30:00', 'HH24:MI:SS'), 30);
     dbms_output.put_line(schedule_text);
+    dbms_output.put_line('_________');
 
     -- Test RecordMedicalService
     praxis_management_pkg.recordmedicalservice(1, 'Leukämie', '1. Stadium', 'Vorläufige Diagnose');
     dbms_output.put_line('Medical service recorded successfully.');
+
     COMMIT;
 END;
 /
