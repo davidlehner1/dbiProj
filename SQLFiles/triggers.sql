@@ -41,33 +41,33 @@ BEGIN
     END IF;
 
     IF :old.nname <> :new.nname THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.nname || ' zu ' || :new.nname || ' ' || CURRENT_TIMESTAMP);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Nachname ' || :old.nname || ' zu ' || :new.nname || ' ' || CURRENT_TIMESTAMP);
         dbms_output.put_line('Veränderungen: Nachname ' || :old.nname || ' zu ' || :new.nname || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.plz <> :new.plz THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.plz || ' zu ' || :new.plz || ' ' || CURRENT_TIMESTAMP);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: PLZ ' || :old.plz || ' zu ' || :new.plz || ' ' || CURRENT_TIMESTAMP);
         dbms_output.put_line('Veränderungen: PLZ ' || :old.plz || ' zu ' || :new.plz || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.ort <> :new.ort THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.ort || ' zu ' || :new.ort || ' ' || CURRENT_TIMESTAMP);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Ort ' || :old.ort || ' zu ' || :new.ort || ' ' || CURRENT_TIMESTAMP);
         dbms_output.put_line('Veränderungen: Ort ' || :old.ort || ' zu ' || :new.ort || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.adresse <> :new.adresse THEN
         INSERT INTO patientupdate (details)
-        VALUES ('Veränderungen: Vorname ' || :old.adresse || ' zu ' || :new.adresse || ' ' || CURRENT_TIMESTAMP);
+        VALUES ('Veränderungen: Adresse ' || :old.adresse || ' zu ' || :new.adresse || ' ' || CURRENT_TIMESTAMP);
         dbms_output.put_line('Veränderungen: Adresse ' || :old.adresse || ' zu ' || :new.adresse || ' ' || CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.hausnr <> :new.hausnr THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.hausnr || ' zu ' || :new.hausnr || ' ' ||  CURRENT_TIMESTAMP);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Hausnummer ' || :old.hausnr || ' zu ' || :new.hausnr || ' ' ||  CURRENT_TIMESTAMP);
         dbms_output.put_line('Veränderungen: Hausnummer ' || :old.hausnr || ' zu ' || :new.hausnr || ' ' ||  CURRENT_TIMESTAMP);
     END IF;
 
     IF :old.geb <> :new.geb THEN
-        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Vorname ' || :old.geb || ' zu ' || :new.geb || ' ' ||  CURRENT_TIMESTAMP);
+        INSERT INTO patientupdate (details) VALUES ('Veränderungen: Geburtsdatum ' || :old.geb || ' zu ' || :new.geb || ' ' ||  CURRENT_TIMESTAMP);
         dbms_output.put_line('Veränderungen: Geburtsdatum ' || TO_CHAR(:old.geb, 'DD.MM.YYYY') || ' zu ' ||
                              TO_CHAR(:new.geb, 'DD.MM.YYYY'));
     END IF;
